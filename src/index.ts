@@ -1,10 +1,9 @@
-import express, {Express, Request, Response, NextFunction, ErrorRequestHandler} from "express"
+import express, {Express, Request, Response, NextFunction} from "express"
 import mongoose from "mongoose"
 import dotenv from "dotenv"
 import router from "./routes/apiRouter"
 
 dotenv.config()
-
 
 const port = 3000;
 
@@ -30,6 +29,9 @@ const errorHandler = (error: Error, req: Request, res: Response, next: NextFunct
 }
 
 const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
 
 app.use("/", router)
 
