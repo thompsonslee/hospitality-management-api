@@ -1,5 +1,7 @@
-import express from "express"
+import express,{Request,Response,NextFunction, Errback} from "express"
 import userController from "../controllers/userController"
+import passport from "passport";
+import authUser from "../helpers/authUser"
 
 const router = express.Router();
 
@@ -7,8 +9,29 @@ router.get("/", (req,res) => {
     res.send("hello")
 });
 
-router.get("/users", userController.getUsers)
+router.get("/users", authUser, userController.getUsers)
 
-router.post("/users", userController.createUser)
+router.post("/register", userController.registerUser)
+
+router.post("/login", passport.authenticate('local', {
+    failureRedirect:"/loginFail",
+    successRedirect:"/loginSuccess"
+}),(err:Errback,req:Request,res:Response,next:NextFunction) =>{
+    next(err)
+})
+
+router.post("/logout", (req,res,next) => {
+    req.logout((err) => {
+        if(err) return next(err)
+        res.send("logout succesful")
+    })
+})
+
+router.get("/loginFail",(req,res) =>{
+    res.send("failed to login")
+})
+router.get("/loginSuccess",(req,res) =>{
+    res.send("login succesful")
+})
 
 export default router

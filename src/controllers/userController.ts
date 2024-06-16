@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import UserModel from "../models/UserModel";
+import passport from "passport";
 
 const getUsers = async(req:Request,res:Response,next:NextFunction) => {
     try{
@@ -9,19 +10,26 @@ const getUsers = async(req:Request,res:Response,next:NextFunction) => {
         next(err)
     }
 }
-const createUser = (req:Request,res:Response,next: NextFunction) => {
+const registerUser = async(req:Request,res:Response,next: NextFunction) => {
     console.log(req.body)
-    const user = new UserModel({
-        username: req.body.username,
-        password: req.body.password
-    })
-    user.save()
-        .then(() =>{
-            res.sendStatus(200)
-        }).catch((error) => {
-            next(error)
+    console.log(req.headers)
+    try{
+        const user = new UserModel({
+            username: req.body.username
+        })
+        UserModel.register(user, req.body.password, (err) => {
+            if(err){
+                console.log(err)
+                res.sendStatus(500)
+            }
+            else{
+                res.sendStatus(200)
+            }
         })
 
-}
+    }catch(error){
+        return next(error)
+    }
 
-export default { getUsers, createUser }
+}
+export default { getUsers, registerUser }
