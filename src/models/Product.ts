@@ -17,3 +17,5 @@ const ProductSchema = new Schema({
 })
 
 const Product = model<Product>("Product",ProductSchema)
+
+export default Product

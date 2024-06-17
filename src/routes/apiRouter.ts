@@ -2,6 +2,8 @@ import express,{Request,Response,NextFunction, Errback} from "express"
 import userController from "../controllers/userController"
 import passport from "passport";
 import authUser from "../helpers/authUser"
+import productRouter from "./productRouter";
+import userRouter from "./productRouter"
 
 const router = express.Router();
 
@@ -33,5 +35,9 @@ router.get("/loginFail",(req,res) =>{
 router.get("/loginSuccess",(req,res) =>{
     res.send("login succesful")
 })
+
+router.use("/product" ,authUser ,productRouter)
+
+router.use("/user/:id",authUser ,userRouter)
 
 export default router

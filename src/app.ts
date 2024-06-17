@@ -36,10 +36,6 @@ const errorHandler = (error: Error, req: Request, res:Response, next: NextFuncti
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-app.use((req,res,next) =>{
-    console.log(req)
-    next()
-})
 
 if(!process.env.secret_key){
     throw new Error("no secret key for session found")
@@ -57,6 +53,12 @@ passportConfig(passport)
 app.use(passport.initialize())
 app.use(passport.session())
 
+app.use((req,res,next) =>{
+    console.log(req.originalUrl)
+    console.log(req.url)
+    console.log(req.baseUrl)
+    next()
+})
 
 app.use("/", router)
 
