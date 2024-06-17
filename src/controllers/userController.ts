@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express"
-import UserModel from "../models/UserModel";
+import UserModel from "../models/User";
 import passport from "passport";
 
 const getUsers = async(req:Request,res:Response,next:NextFunction) => {

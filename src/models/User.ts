@@ -12,6 +12,6 @@ UserSchema.plugin(PassportLocalMongoose,{
     usernameField: 'username'
 })
 
-const UserModel = model<user>("User",UserSchema);
+const User = model<user>("User",UserSchema);
 
-export default UserModel
+export default User
