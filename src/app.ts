@@ -55,8 +55,6 @@ app.use(passport.session())
 
 app.use((req,res,next) =>{
     console.log(req.originalUrl)
-    console.log(req.url)
-    console.log(req.baseUrl)
     next()
 })
 

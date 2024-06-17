@@ -3,10 +3,13 @@ import userController from "../controllers/userController"
 import passport from "passport";
 import authUser from "../helpers/authUser"
 import productRouter from "./productRouter";
-import userRouter from "./productRouter"
+import userRouter from "./userRouter"
 
 const router = express.Router();
-
+router.use((req,res,next) => {
+    console.log("using apiRouter")
+    next()
+})
 router.get("/", (req,res) => {
     res.send("hello")
 });

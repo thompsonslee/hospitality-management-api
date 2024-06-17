@@ -7,3 +7,5 @@ userRouter.use((req: Request,res:Response,next:NextFunction) =>{
     res.send(req.user)
 
 })
+
+export default userRouter
