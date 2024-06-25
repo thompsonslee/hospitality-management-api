@@ -2,17 +2,15 @@ import { model, Schema, Document, ObjectId} from "mongoose";
 
 export interface Transaction extends Document{
     type: "buy" | "Sell",
-    quantity: number,
-    product: ObjectId
+    price: number,
     user: ObjectId,
-    area: ObjectId,
+    inventory: ObjectId,
     Date: Date
 }
 
 const TransactionSchema = new Schema({
     type: {type: String, enum:["buy","sell"]},
-    quantity: {type: Number},
-    product: {type: Schema.ObjectId, ref: "Product"},
+    cost: {type: Number},
     user: {type: Schema.ObjectId, ref: "User"},
     area: {type: Schema.ObjectId, ref: "Area"},
     Date: {type: Date, default: Date.now()}

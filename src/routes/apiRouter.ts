@@ -3,13 +3,10 @@ import userController from "../controllers/userController"
 import passport from "passport";
 import authUser from "../helpers/authUser"
 import productRouter from "./productRouter";
-import userRouter from "./userRouter"
+import operationsRouter from "./operationsRouter"
 
 const router = express.Router();
-router.use((req,res,next) => {
-    console.log("using apiRouter")
-    next()
-})
+
 router.get("/", (req,res) => {
     res.send("hello")
 });
@@ -39,8 +36,10 @@ router.get("/loginSuccess",(req,res) =>{
     res.send("login succesful")
 })
 
+
 router.use("/product" ,authUser ,productRouter)
 
-router.use("/user/:id",authUser ,userRouter)
+router.use(authUser, operationsRouter)
+
 
 export default router
