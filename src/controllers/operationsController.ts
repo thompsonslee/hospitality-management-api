@@ -16,7 +16,7 @@ const getAllAreas = async(req:Request,res:Response,next:NextFunction) => {
 
 const getArea = async(req:Request,res:Response,next:NextFunction) =>{
     try{
-        const area = await Area.findById(req.params.id)
+        const area = await Area.findById(req.params.areaId)
         res.send(area)
     }catch(e){
         return next(e)
@@ -47,7 +47,7 @@ type cartItem = {
     id: any,
     quantity: number
 }
-const calcCartWholeSalePrice = async(cart: Array<cartItem>) =>  {
+const calcCartWholeSalePrice = async(cart: Array<cartItem>) => {
     const priceArray = cart.map(async(item: cartItem) => {
         const product = await Product.findById(item.id).select('price').exec()
         if(!product){
@@ -60,22 +60,38 @@ const calcCartWholeSalePrice = async(cart: Array<cartItem>) =>  {
         return accum + current
     },0)
 }
-const orderItems = async(req:Request,res:Response,next:NextFunction) => {
-    try{
-        if(!req.body.products){
-            throw new Error("no products array given")
-        }
-        const cart: Array<cartItem> = req.body.products
-        const productInstancesArray = cart.map((cartItem) => {
-            return new ProductInstance({
+const saveInstanceToInventory = async(cartItem:cartItem,areaId:string) => {
+
+    const instance = await ProductInstance.findOne({product: cartItem.id}).exec()
+    if(!instance){
+        await ProductInstance.create({
                 product: cartItem.id,
+                area: areaId,
                 quantity: cartItem.quantity
-            })
         })
-        console.log(productInstancesArray)
-        const totalPrice = await calcCartWholeSalePrice(req.body.products)
-        console.log(totalPrice)
-        
+    }else{
+        await ProductInstance.findOneAndUpdate({
+            product: cartItem.id},{quantity: instance.quantity + cartItem.quantity}
+        )
+    }
+}
+
+const orderItems = async(req:Request,res:Response,next:NextFunction) => {
+    if(!req.user){
+        throw new Error("no user")
+    }
+    if(!req.body.products){
+        throw new Error("no products array given")
+    }
+    try{
+        const cart: Array<cartItem> = req.body.products
+        cart.forEach((item) => saveInstanceToInventory(item,req.params.areaId))
+        await Transaction.create({
+            type: "buy",
+            cost: await calcCartWholeSalePrice(cart),
+            user: req.user.id,
+            area: req.params.areaId,
+        })
         res.sendStatus(200)
     }catch(e){
         next(e)

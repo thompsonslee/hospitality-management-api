@@ -16,11 +16,11 @@ const router = express.Router()
 
 router.get("/area", operationsController.getAllAreas)
 
-router.get("/area/:id" , operationsController.getArea)
+router.get("/area/:areaId" , operationsController.getArea)
 
 router.post("/area", operationsController.postArea)
 
-router.post("/area/:id/orderItems",operationsController.orderItems)
+router.post("/area/:areaId/orderItems",operationsController.orderItems)
 
 router.get("/transaction", operationsController.getAllTransactions)
 
