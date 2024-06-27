@@ -7,8 +7,8 @@ const router = express.Router()
 //get inventory/id
 //post inventory
 //get transactions
-
 //order items
+
 //sell items
 //transfer from inventory to inventory
 
@@ -21,6 +21,8 @@ router.get("/area/:areaId" , operationsController.getArea)
 router.post("/area", operationsController.postArea)
 
 router.post("/area/:areaId/orderItems",operationsController.orderItems)
+
+router.post("/area/:areaId/sellItems",operationsController.sellItems)
 
 router.get("/transaction", operationsController.getAllTransactions)
 
