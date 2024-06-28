@@ -14,7 +14,6 @@ const getAllAreas = async(req:Request,res:Response,next:NextFunction) => {
     try{
         const allAreas = await Area.find({user: req.user?.id})
         res.send(allAreas)
-
     }catch(e){
         next(e)
     }
@@ -85,7 +84,7 @@ const sellItems = async(req:Request,res:Response,next:NextFunction) => {
     }
     try{
         const cart: Array<cartItem> = req.body.products
-        cart.forEach((item) => removeInstanceFromInventory(item))
+        cart.forEach((item) => removeInstanceFromInventory(item,req.params.areaId))
         await Transaction.create({
             type: "sell",
             cost: await calcCartPrice(cart, "retail"),
@@ -97,8 +96,6 @@ const sellItems = async(req:Request,res:Response,next:NextFunction) => {
         next(e)
     }
 }
-
-
 const transferItems = async(req:Request,res:Response,next:NextFunction) => {
     const cart: Array<cartItem> = req.body.products
     cart.forEach((item) => transferItem(item,req.params.areaId, req.params.area2Id))

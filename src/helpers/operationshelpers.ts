@@ -22,22 +22,23 @@ const calcCartPrice = async(cart: Array<cartItem>,options: "wholesale"| "retail"
 }
 
 const saveInstanceToInventory = async(cartItem:cartItem,areaId:string) => {
-    const instance = await ProductInstance.findOne({product: cartItem.id}).exec()
+
+    const instance = await ProductInstance.findOne({product: cartItem.id, area: areaId}).exec()
     if(!instance){
+        //create new instance if area doesnt have instance of item
         await ProductInstance.create({
                 product: cartItem.id,
                 area: areaId,
                 quantity: cartItem.quantity
         })
     }else{
-        await ProductInstance.findOneAndUpdate({
-            product: cartItem.id},{quantity: instance.quantity + cartItem.quantity}
+        await ProductInstance.findByIdAndUpdate(instance.id, {quantity: instance.quantity + cartItem.quantity}
         )
     }
 }
 
-const removeInstanceFromInventory = async(cartItem:cartItem) => {
-    const instance = await ProductInstance.findOne({product: cartItem.id}).exec()
+const removeInstanceFromInventory = async(cartItem:cartItem,areaId:string) => {
+    const instance = await ProductInstance.findOne({product: cartItem.id, area: areaId}).exec()
     if(!instance){
         throw new Error("no instance found")
     }
@@ -64,7 +65,7 @@ const transferItem = async(item:cartItem, areaId:string, area2Id: string ) => {
             await ProductInstance.findOneAndUpdate({product: item.id, area: areaId}, {area: area2Id}).exec()
             return
         }
-        await removeInstanceFromInventory(item)
+        await removeInstanceFromInventory(item, areaId)
         await saveInstanceToInventory(item, area2Id)
     }catch(e){
         console.log(e)
