@@ -3,6 +3,12 @@ import Product from "../models/Product"
 import Area from "../models/Area"
 import Transaction from "../models/Transaction"
 import ProductInstance from "../models/ProductInstances"
+import { calcCartPrice, saveInstanceToInventory, removeInstanceFromInventory, transferItem} from "../helpers/operationshelpers"
+
+type cartItem = {
+    id: any,
+    quantity: number
+}
 
 const getAllAreas = async(req:Request,res:Response,next:NextFunction) => {
     try{
@@ -26,6 +32,7 @@ const getArea = async(req:Request,res:Response,next:NextFunction) =>{
 const postArea = async (req:Request,res:Response,next:NextFunction) => {
     try{
         const area = new Area({
+            name: req.body.name,
             user: req.user?.id
         })
         await area.save()
@@ -42,49 +49,6 @@ const getAllTransactions = async (req:Request,res:Response,next:NextFunction) =>
     }catch(e){
         next(e)
     }
-}
-type cartItem = {
-    id: any,
-    quantity: number
-}
-const calcCartPrice = async(cart: Array<cartItem>,options: "wholesale"| "retail") => {
-    const priceArray = cart.map(async(item: cartItem) => {
-        const product = await Product.findById(item.id).select('price').exec()
-        if(!product){
-            throw new Error("product not found")
-        }
-        if(options === "wholesale") return product.price.wholesale * item.quantity
-        else return product.price.retail * item.quantity
-    })
-    const arrayToReduce = await Promise.all(priceArray)
-    return arrayToReduce.reduce((accum,current) => {
-        return accum + current
-    },0)
-}
-const saveInstanceToInventory = async(cartItem:cartItem,areaId:string) => {
-    const instance = await ProductInstance.findOne({product: cartItem.id}).exec()
-    if(!instance){
-        await ProductInstance.create({
-                product: cartItem.id,
-                area: areaId,
-                quantity: cartItem.quantity
-        })
-    }else{
-        await ProductInstance.findOneAndUpdate({
-            product: cartItem.id},{quantity: instance.quantity + cartItem.quantity}
-        )
-    }
-}
-const removeInstanceFromInventory = async(cartItem:cartItem,areaId:string) => {
-    const instance = await ProductInstance.findOne({product: cartItem.id}).exec()
-    if(!instance){
-        throw new Error("no instance found")
-    }
-    if(cartItem.quantity === instance.quantity){
-        ProductInstance.findByIdAndDelete(cartItem.id).exec()
-        return
-    }
-    await ProductInstance.findOneAndUpdate({product: cartItem.id}, {quantity: instance.quantity - cartItem.quantity}).exec()
 }
 
 const orderItems = async(req:Request,res:Response,next:NextFunction) => {
@@ -121,7 +85,7 @@ const sellItems = async(req:Request,res:Response,next:NextFunction) => {
     }
     try{
         const cart: Array<cartItem> = req.body.products
-        cart.forEach((item) => removeInstanceFromInventory(item, req.params.areaId))
+        cart.forEach((item) => removeInstanceFromInventory(item))
         await Transaction.create({
             type: "sell",
             cost: await calcCartPrice(cart, "retail"),
@@ -134,4 +98,11 @@ const sellItems = async(req:Request,res:Response,next:NextFunction) => {
     }
 }
 
-export default {getAllAreas, getArea, postArea, getAllTransactions, orderItems, sellItems}
+
+const transferItems = async(req:Request,res:Response,next:NextFunction) => {
+    const cart: Array<cartItem> = req.body.products
+    cart.forEach((item) => transferItem(item,req.params.areaId, req.params.area2Id))
+    res.sendStatus(200)
+}
+
+export default {getAllAreas, getArea, postArea, getAllTransactions, orderItems, sellItems, transferItems}
