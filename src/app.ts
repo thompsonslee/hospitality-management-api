@@ -5,6 +5,7 @@ import dotenv from "dotenv"
 import router from "./routes/apiRouter"
 import passportConfig from "./helpers/passport"
 import passport from "passport"
+import cors from "cors"
 
 
 dotenv.config()
@@ -12,6 +13,7 @@ dotenv.config()
 const port = 3000;
 
 const mongoDB_URI = process.env.mongoDB_URI
+const clientOrigin = process.env.client_origin
 
 async function mongoDB_connect(){
     if(!mongoDB_URI){
@@ -36,6 +38,16 @@ const errorHandler = (error: Error, req: Request, res:Response, next: NextFuncti
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+app.use(cors({
+    origin: clientOrigin,
+    credentials: true
+}))
+
+app.use((req,res,next) => {
+    console.log(req.headers.cookie)
+    next()
+})
+
 
 if(!process.env.secret_key){
     throw new Error("no secret key for session found")
@@ -43,7 +55,8 @@ if(!process.env.secret_key){
 app.use(session({
     secret: process.env.secret_key,
     cookie:{
-        maxAge: 86400000 //24 hours
+        maxAge: 86400000, //24 hours
+        secure: false
     },
     resave: false,
     saveUninitialized: false

@@ -8,6 +8,8 @@ import operationsRouter from "./operationsRouter"
 const router = express.Router();
 
 router.get("/", (req,res) => {
+    console.log(req.session)
+    console.log("sending hello")
     res.send("hello")
 });
 
@@ -30,9 +32,9 @@ router.post("/logout", (req,res,next) => {
 })
 
 router.get("/loginFail",(req,res) =>{
-    res.send("failed to login")
+    res.status(403).send("failed to login")
 })
-router.get("/loginSuccess",(req,res) =>{
+router.get("/loginSuccess",(req,res) => {
     res.send("login succesful")
 })
 
