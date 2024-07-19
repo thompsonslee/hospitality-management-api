@@ -43,12 +43,6 @@ app.use(cors({
     credentials: true
 }))
 
-app.use((req,res,next) => {
-    console.log(req.headers.cookie)
-    next()
-})
-
-
 if(!process.env.secret_key){
     throw new Error("no secret key for session found")
 }

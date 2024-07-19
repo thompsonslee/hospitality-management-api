@@ -21,8 +21,15 @@ const getAllAreas = async(req:Request,res:Response,next:NextFunction) => {
 
 const getArea = async(req:Request,res:Response,next:NextFunction) =>{
     try{
-        const area = await Area.findById(req.params.areaId)
-        res.send(area)
+        const [area,productInstances] = await Promise.all([
+            Area.findById(req.params.areaId),
+            ProductInstance.find({area: req.params.areaId}).populate("product")
+        ])
+        res.json({
+            area: area,
+            productInstances: productInstances
+        })
+        console.log(area,productInstances)
     }catch(e){
         return next(e)
     }
@@ -97,7 +104,12 @@ const sellItems = async(req:Request,res:Response,next:NextFunction) => {
     }
 }
 const transferItems = async(req:Request,res:Response,next:NextFunction) => {
+    
     const cart: Array<cartItem> = req.body.products
+    if(!cart){
+        res.status(400).send('req.body.products is undefined')
+        return
+    }
     cart.forEach((item) => transferItem(item,req.params.areaId, req.params.area2Id))
     res.sendStatus(200)
 }
