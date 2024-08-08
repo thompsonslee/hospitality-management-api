@@ -12,7 +12,11 @@ type cartItem = {
 
 const getAllAreas = async(req:Request,res:Response,next:NextFunction) => {
     try{
-        const allAreas = await Area.find({user: req.user?.id})
+        if(!req.user){
+            res.sendStatus(400)
+            return
+        }
+        const allAreas = await Area.find({user: req.user.id})
         res.send(allAreas)
     }catch(e){
         next(e)

@@ -12,6 +12,7 @@ router.get("/", (req,res) => {
     console.log("sending hello")
     res.send("hello")
 });
+router.get("/sessionActive", authUser,(req,res) => res.sendStatus(200))
 
 router.get("/users", authUser, userController.getUsers)
 
