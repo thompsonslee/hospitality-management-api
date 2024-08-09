@@ -28,7 +28,7 @@ router.post("/area/:areaId/sellItems",operationsController.sellItems)
 
 router.post("/area/:areaId/transfer/:area2Id", operationsController.transferItems)
 
-router.get("/area/:areaId/tillLayout", TillLayoutController.getAllTillLayouts)
+router.get("/tillLayout", TillLayoutController.getAllTillLayouts)
 
 router.get("/area/:areaId/tillLayout/:tillLayoutId", tillLayoutController.getTillLayout)
 

@@ -1,8 +1,18 @@
 import { Request,Response,NextFunction } from "express";
+import Area from "../models/Area"
 import TillLayout from "../models/TillLayout";
 
 const getAllTillLayouts = async(req: Request,res: Response,next: NextFunction) => {
-    res.sendStatus(500)
+    if(!req.user){
+        console.log("no req.user")
+        res.sendStatus(403)
+        return
+    }
+    console.log(req.user)
+    const userAreaIdObjects = await Area.find({user: req.user._id}).select({"_id": 1})
+    const userAreaIds = userAreaIdObjects.map(object => object._id)
+    const tillLayouts = await TillLayout.find({area: {$in: userAreaIds}})
+    res.send(tillLayouts)
 }
 
 const getTillLayout = async(req: Request,res: Response,next: NextFunction) => {
