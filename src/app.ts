@@ -11,7 +11,6 @@ import cors from "cors"
 dotenv.config()
 
 const port = 3000;
-
 const mongoDB_URI = process.env.mongoDB_URI
 const clientOrigin = process.env.client_origin
 
@@ -20,10 +19,16 @@ async function mongoDB_connect(){
         console.log("No mongoDB URI")
         return
     }
-    await mongoose.connect(mongoDB_URI).catch((e) => console.log(e))
+    await mongoose.connect(mongoDB_URI,{
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 5000,
+    })
+    .then(() => console.log("mongoDB connection succesful"))
+    .catch((e) => console.log(e))
 }
 
 mongoose.connection.on('error', err => {
+    console.log("mongoDB connection error")
     console.log(err)
   });
 

@@ -4,11 +4,9 @@ import TillLayout from "../models/TillLayout";
 
 const getAllTillLayouts = async(req: Request,res: Response,next: NextFunction) => {
     if(!req.user){
-        console.log("no req.user")
         res.sendStatus(403)
         return
     }
-    console.log(req.user)
     const userAreaIdObjects = await Area.find({user: req.user._id}).select({"_id": 1})
     const userAreaIds = userAreaIdObjects.map(object => object._id)
     const tillLayouts = await TillLayout.find({area: {$in: userAreaIds}})
@@ -16,7 +14,10 @@ const getAllTillLayouts = async(req: Request,res: Response,next: NextFunction) =
 }
 
 const getTillLayout = async(req: Request,res: Response,next: NextFunction) => {
-    const tillLayout = TillLayout.findById(req.params.tillLayoutId).populate("Product")
+    const tillLayout = await TillLayout.findById(req.params.tillLayoutId).populate({
+        path: "gridItems",
+        populate: "product"
+    })
     if(!tillLayout){
         res.sendStatus(400)
         return
@@ -26,7 +27,6 @@ const getTillLayout = async(req: Request,res: Response,next: NextFunction) => {
 
 const saveTillLayout = async(req: Request,res: Response,next: NextFunction) => {
     try{
-    console.log(req.body)
     const tillLayout = new TillLayout({
         name: req.body.name,
         area: req.params.areaId,
@@ -42,5 +42,19 @@ const saveTillLayout = async(req: Request,res: Response,next: NextFunction) => {
     }
 }
 
+const modifyTillLayout = async(req: Request,res: Response,next: NextFunction) => {
+    try{
+        await TillLayout.findByIdAndUpdate(req.params.tillId,{
+            name: req.body.name,
+            area: req.params.areaId,
+            gridItems: req.body.gridItems,
+            size: req.body.size
+        }).exec()
+    }catch(e){
+        console.log(e)
+        res.sendStatus(500)
+    }
+}
 
-export default {getAllTillLayouts, getTillLayout, saveTillLayout }
+
+export default {getAllTillLayouts, getTillLayout, saveTillLayout, modifyTillLayout }

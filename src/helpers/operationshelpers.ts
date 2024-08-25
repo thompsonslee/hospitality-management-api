@@ -47,11 +47,9 @@ const removeInstanceFromInventory = async(cartItem:cartItem,areaId:string) => {
         return
     }
     const newqty = instance.quantity - cartItem.quantity
-    console.log(newqty)
 
     //not updating for some reason
     const itemtoUpdate = await ProductInstance.findOneAndUpdate({product: cartItem.id}, {quantity: newqty}, {new: true}).exec()
-    console.log(itemtoUpdate)
 }
 
 const transferItem = async(item:cartItem, areaId:string, area2Id: string ) => {

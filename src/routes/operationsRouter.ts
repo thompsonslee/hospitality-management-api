@@ -2,6 +2,7 @@ import express from "express"
 import operationsController from "../controllers/operationsController"
 import TillLayoutController from "../controllers/tillLayoutController"
 import tillLayoutController from "../controllers/tillLayoutController"
+import productInstanceController from "../controllers/productInstanceController"
 
 const router = express.Router()
 
@@ -34,7 +35,11 @@ router.get("/area/:areaId/tillLayout/:tillLayoutId", tillLayoutController.getTil
 
 router.post("/area/:areaId/tillLayout", TillLayoutController.saveTillLayout)
 
+router.put("/area/:areaId/tillLayout:tillLayoutId", TillLayoutController.modifyTillLayout)
+
 router.get("/transaction", operationsController.getAllTransactions)
+
+router.get("/productInstances", productInstanceController.getAllProductInstances)
 
 
 

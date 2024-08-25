@@ -4,6 +4,7 @@ import passport from "passport";
 import authUser from "../helpers/authUser"
 import productRouter from "./productRouter";
 import operationsRouter from "./operationsRouter"
+import User from "../models/User";
 
 const router = express.Router();
 
@@ -12,6 +13,10 @@ router.get("/", (req,res) => {
     console.log("sending hello")
     res.send("hello")
 });
+router.get("/dbtest", async(req,res) => {
+    const users = await User.find()
+    res.json(users)
+})
 router.get("/sessionActive", authUser,(req,res) => res.sendStatus(200))
 
 router.get("/users", authUser, userController.getUsers)

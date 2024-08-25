@@ -94,15 +94,19 @@ const sellItems = async(req:Request,res:Response,next:NextFunction) => {
         return
     }
     try{
+        console.log(req.body)
         const cart: Array<cartItem> = req.body.products
-        cart.forEach((item) => removeInstanceFromInventory(item,req.params.areaId))
-        await Transaction.create({
+        const transaction = await Transaction.create({
             type: "sell",
             cost: await calcCartPrice(cart, "retail"),
             user: req.user.id,
             area: req.params.areaId
         })
+        if(!transaction) throw new Error("failed to create transaction")
+
+        cart.forEach((item) => removeInstanceFromInventory(item,req.params.areaId))
         res.sendStatus(200)
+        
     }catch(e){
         next(e)
     }

@@ -30,6 +30,5 @@ const registerUser = async(req:Request,res:Response,next: NextFunction) => {
     }catch(error){
         return next(error)
     }
-
 }
 export default { getUsers, registerUser }
