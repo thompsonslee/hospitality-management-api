@@ -27,14 +27,14 @@ const getTillLayout = async(req: Request,res: Response,next: NextFunction) => {
 
 const saveTillLayout = async(req: Request,res: Response,next: NextFunction) => {
     try{
-    const tillLayout = new TillLayout({
-        name: req.body.name,
-        area: req.params.areaId,
-        gridItems: req.body.gridItems,
-        size: req.body.size
-    })
-    await tillLayout.save()
-    res.sendStatus(200)
+        const tillLayout = new TillLayout({
+            name: req.body.name,
+            area: req.params.areaId,
+            gridItems: req.body.gridItems,
+            size: req.body.size
+        })
+        await tillLayout.save()
+        res.sendStatus(200)
 
     }catch(e){
         console.log(e)
@@ -44,12 +44,15 @@ const saveTillLayout = async(req: Request,res: Response,next: NextFunction) => {
 
 const modifyTillLayout = async(req: Request,res: Response,next: NextFunction) => {
     try{
-        await TillLayout.findByIdAndUpdate(req.params.tillId,{
+        if(!req.params.tillLayoutId) res.sendStatus(400)
+        const till = await TillLayout.findByIdAndUpdate(req.params.tillLayoutId,{
             name: req.body.name,
             area: req.params.areaId,
             gridItems: req.body.gridItems,
             size: req.body.size
-        }).exec()
+        })
+        if(!till) throw new Error("no till found")
+        res.sendStatus(200)
     }catch(e){
         console.log(e)
         res.sendStatus(500)
