@@ -37,6 +37,8 @@ router.post("/area/:areaId/tillLayout", TillLayoutController.saveTillLayout)
 
 router.put("/area/:areaId/tillLayout/:tillLayoutId", TillLayoutController.modifyTillLayout)
 
+router.delete("/area/:areaId/tillLayout/:tillLayoutId", TillLayoutController.deleteTillLayout)
+
 router.get("/transaction", operationsController.getAllTransactions)
 
 router.get("/productInstances", productInstanceController.getAllProductInstances)

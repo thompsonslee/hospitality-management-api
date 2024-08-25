@@ -59,5 +59,19 @@ const modifyTillLayout = async(req: Request,res: Response,next: NextFunction) =>
     }
 }
 
+const deleteTillLayout = async(req: Request,res: Response,next: NextFunction) => {
+    if(!req.params.tillLayoutId) res.sendStatus(400)
+    try{
+        const till = await TillLayout.findByIdAndDelete(req.params.tillLayoutId)
+        if(!till) throw new Error("no tillLayout found")
+        
+        res.sendStatus(200)
 
-export default {getAllTillLayouts, getTillLayout, saveTillLayout, modifyTillLayout }
+    }catch(e){
+        console.log(e)
+        res.sendStatus(500)
+    }
+}
+
+
+export default {getAllTillLayouts, getTillLayout, saveTillLayout, modifyTillLayout,deleteTillLayout }
