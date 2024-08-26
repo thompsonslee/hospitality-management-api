@@ -43,13 +43,12 @@ const removeInstanceFromInventory = async(cartItem:cartItem,areaId:string) => {
         throw new Error("no instance found")
     }
     if(cartItem.quantity === instance.quantity){
-        ProductInstance.findByIdAndDelete(cartItem.id).exec()
+        await instance.deleteOne()
         return
     }
     const newqty = instance.quantity - cartItem.quantity
-
-    //not updating for some reason
-    const itemtoUpdate = await ProductInstance.findOneAndUpdate({product: cartItem.id}, {quantity: newqty}, {new: true}).exec()
+    instance.quantity = newqty
+    instance.save()
 }
 
 const transferItem = async(item:cartItem, areaId:string, area2Id: string ) => {

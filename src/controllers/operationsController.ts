@@ -103,10 +103,9 @@ const sellItems = async(req:Request,res:Response,next:NextFunction) => {
             area: req.params.areaId
         })
         if(!transaction) throw new Error("failed to create transaction")
-
-        cart.forEach((item) => removeInstanceFromInventory(item,req.params.areaId))
-        res.sendStatus(200)
-        
+        await Promise.all(
+            cart.map(async item => await removeInstanceFromInventory(item,req.params.areaId))
+        ).then(() => res.sendStatus(200))
     }catch(e){
         next(e)
     }
