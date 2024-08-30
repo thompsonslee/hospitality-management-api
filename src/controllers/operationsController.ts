@@ -52,6 +52,27 @@ const postArea = async (req:Request,res:Response,next:NextFunction) => {
     }
 }
 
+const getTenTransactions = async (req:Request,res:Response,next:NextFunction) => {
+    if(!req.params.page){
+        res.send(404)
+        return
+    }
+    if(!req.user){
+        res.sendStatus(500)
+        return
+    }
+    const amountToSkip = (parseInt(req.params.page) -1) * 10
+
+    const transactions = await Transaction
+    .find({user: req.user.id})
+    .sort('Date')
+    .skip(amountToSkip)
+    .limit(10)
+    .populate("area")
+    .exec()
+    res.status(200).send(transactions)
+}
+
 const getAllTransactions = async (req:Request,res:Response,next:NextFunction) => {
     try{
         const transactions = await Transaction.find({user: req.user?.id})
@@ -121,4 +142,4 @@ const transferItems = async(req:Request,res:Response,next:NextFunction) => {
     res.sendStatus(200)
 }
 
-export default {getAllAreas, getArea, postArea, getAllTransactions, orderItems, sellItems, transferItems}
+export default {getAllAreas, getArea, postArea, getAllTransactions, orderItems, sellItems, transferItems, getTenTransactions}

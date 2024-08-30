@@ -41,6 +41,8 @@ router.delete("/area/:areaId/tillLayout/:tillLayoutId", TillLayoutController.del
 
 router.get("/transaction", operationsController.getAllTransactions)
 
+router.get("/transactions/:page", operationsController.getTenTransactions)
+
 router.get("/productInstances", productInstanceController.getAllProductInstances)
 
 

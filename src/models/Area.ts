@@ -10,6 +10,6 @@ const AreaSchema = new Schema({
     user: {type: Schema.ObjectId, ref: "User"},
 })
 
-const Area = model<Area>("Inventory",AreaSchema)
+const Area = model<Area>("Area",AreaSchema)
 
 export default Area
