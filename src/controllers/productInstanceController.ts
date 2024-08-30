@@ -9,4 +9,8 @@ const getAllProductInstances = async(req:Request,res:Response,next: NextFunction
     const productInstances = await ProductInstance.find({area: {$in: userAreaIds}}).populate("product")
     res.send(productInstances)
 }
-export default {getAllProductInstances}
+const getAreaProductInstances = async(req:Request,res: Response,next:NextFunction) => {
+    const productInstances = await ProductInstance.find({area: req.params.areaId}).populate("product")
+    res.json(productInstances)
+}
+export default {getAllProductInstances,getAreaProductInstances}

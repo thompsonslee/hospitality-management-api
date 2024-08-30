@@ -45,6 +45,8 @@ router.get("/transactions/:page", operationsController.getTenTransactions)
 
 router.get("/productInstances", productInstanceController.getAllProductInstances)
 
+router.get("/area/:areaId/productInstances", productInstanceController.getAreaProductInstances)
+
 
 
 
