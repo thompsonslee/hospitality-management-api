@@ -3,6 +3,7 @@ import operationsController from "../controllers/operationsController"
 import TillLayoutController from "../controllers/tillLayoutController"
 import tillLayoutController from "../controllers/tillLayoutController"
 import productInstanceController from "../controllers/productInstanceController"
+import clearAllDemoData from "../helpers/clearAllDemoData"
 
 const router = express.Router()
 
@@ -46,6 +47,8 @@ router.get("/transactions/:page", operationsController.getTenTransactions)
 router.get("/productInstances", productInstanceController.getAllProductInstances)
 
 router.get("/area/:areaId/productInstances", productInstanceController.getAreaProductInstances)
+
+router.delete("/allDemoData",clearAllDemoData)
 
 
 

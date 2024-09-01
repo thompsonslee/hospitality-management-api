@@ -5,9 +5,12 @@ export interface user extends Document{
     username: string,
     password: string,
     salt: string
+    isDemoAccount: boolean
 }
 
-const UserSchema = new Schema({});
+const UserSchema = new Schema({
+    isDemoAccount: {type: Boolean}
+});
 UserSchema.plugin(PassportLocalMongoose,{
     usernameField: 'username'
 })

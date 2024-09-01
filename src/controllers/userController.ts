@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express"
 import UserModel from "../models/User";
+import { createDemoData } from "../demoAccountData/createDemoAccountData";
 import passport from "passport";
+import { Types } from "mongoose";
 
 const getUsers = async(req:Request,res:Response,next:NextFunction) => {
     try{
@@ -14,18 +16,26 @@ const registerUser = async(req:Request,res:Response,next: NextFunction) => {
     console.log(req.body)
     console.log(req.headers)
     try{
-        const user = new UserModel({
-            username: req.body.username
+        const userData = new UserModel({
+            username: req.body.username,
+            isDemoAccount: req.body.isDemoAccount
         })
-        UserModel.register(user, req.body.password, (err) => {
-            if(err){
-                console.log(err)
-                res.sendStatus(500)
+        const user = await UserModel.register(userData, req.body.password)
+        if(!user){
+            res.sendStatus(500)
+            return
+        }
+        
+        if(user.isDemoAccount){
+            console.log(user._id)
+            console.log("is instanceof objectId?")
+            console.log(user._id instanceof Types.ObjectId)
+            if(user._id instanceof Types.ObjectId){
+                await createDemoData(user._id)
             }
-            else{
-                res.sendStatus(200)
-            }
-        })
+            else(console.log("not an instance of objectId"))
+        }
+        res.sendStatus(200)
 
     }catch(error){
         return next(error)
