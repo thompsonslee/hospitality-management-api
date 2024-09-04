@@ -4,6 +4,7 @@ import TillLayoutController from "../controllers/tillLayoutController"
 import tillLayoutController from "../controllers/tillLayoutController"
 import productInstanceController from "../controllers/productInstanceController"
 import clearAllDemoData from "../helpers/clearAllDemoData"
+import userController from "../controllers/userController"
 
 const router = express.Router()
 
@@ -47,6 +48,8 @@ router.get("/transactions/:page", operationsController.getTenTransactions)
 router.get("/productInstances", productInstanceController.getAllProductInstances)
 
 router.get("/area/:areaId/productInstances", productInstanceController.getAreaProductInstances)
+
+router.get("/userData", userController.getUserData)
 
 router.delete("/allDemoData",clearAllDemoData)
 

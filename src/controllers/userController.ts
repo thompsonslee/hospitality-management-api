@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express"
 import UserModel from "../models/User";
 import { createDemoData } from "../demoAccountData/createDemoAccountData";
-import passport from "passport";
 import { Types } from "mongoose";
+import getUsersData from "../helpers/getUserData";
 
 const getUsers = async(req:Request,res:Response,next:NextFunction) => {
     try{
@@ -41,4 +41,12 @@ const registerUser = async(req:Request,res:Response,next: NextFunction) => {
         return next(error)
     }
 }
-export default { getUsers, registerUser }
+const getUserData = async(req:Request,res:Response,next:NextFunction) => {
+    if(!req.user){
+        res.sendStatus(403)
+        return
+    }
+    const data = await getUsersData(req.user.id)
+    res.json(data)
+}
+export default { getUsers, registerUser,getUserData }
