@@ -1,4 +1,4 @@
-import Product from "../models/Product"
+import ProductModel from "../models/Product"
 import ProductInstance from "../models/ProductInstances"
 
 type cartItem = {
@@ -8,7 +8,7 @@ type cartItem = {
 
 const calcCartPrice = async(cart: Array<cartItem>,options: "wholesale"| "retail") => {
     const priceArray = cart.map(async(item: cartItem) => {
-        const product = await Product.findById(item.id).select('price').exec()
+        const product = await ProductModel.findById(item.id).select('price').exec()
         if(!product){
             throw new Error("product not found")
         }

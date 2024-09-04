@@ -24,7 +24,7 @@ const getProductByID = async(req:Request,res:Response,next: NextFunction) => {
 
 const addProduct = async(req:Request,res:Response,next:NextFunction) => {
     try{
-        const product: Product = new ProductModel({
+        const product = new ProductModel({
             name: req.body.name,
             price: {
                 wholesale: req.body.wholesale,

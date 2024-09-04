@@ -150,13 +150,6 @@ export const createProductInstances = (storageId:Types.ObjectId,mainBarId:Types.
     },
     {
       _id: new Types.ObjectId(),
-      product: new Types.ObjectId(),
-      area: storageId,
-      quantity: 48,
-      __v: 0
-    },
-    {
-      _id: new Types.ObjectId(),
       product: '66cabe7bb237c75938b3f2ec',
       area: storageId,
       quantity: 24,

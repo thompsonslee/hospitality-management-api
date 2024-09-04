@@ -32,9 +32,11 @@ router.post("/login", passport.authenticate('local', {
 
 router.post("/logout", (req,res,next) => {
     req.logout((err) => {
-        if(err) return next(err)
-        res.send("logout succesful")
+        if(err)next(err);
+        return
     })
+    console.log("logout successful")
+    res.sendStatus(200)
 })
 
 router.get("/loginFail",(req,res) =>{
