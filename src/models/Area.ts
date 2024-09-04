@@ -1,11 +1,11 @@
 import { model, Schema, Document, ObjectId } from "mongoose";
 
-export interface Area extends Document{
+export interface Area{
     name: String
     user: ObjectId,
 }
 
-const AreaSchema = new Schema({
+const AreaSchema = new Schema<Area>({
     name: {type: String},
     user: {type: Schema.ObjectId, ref: "User"},
 })

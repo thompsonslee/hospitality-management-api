@@ -1,14 +1,14 @@
 import { model, Schema, Document, ObjectId} from "mongoose";
 
-export interface Transaction extends Document{
+export interface Transaction{
     type: "buy" | "Sell",
-    price: number,
+    cost: number,
     user: ObjectId,
-    inventory: ObjectId,
+    area: ObjectId,
     Date: Date
 }
 
-const TransactionSchema = new Schema({
+const TransactionSchema = new Schema<Transaction>({
     type: {type: String, enum:["buy","sell"]},
     cost: {type: Number},
     user: {type: Schema.ObjectId, ref: "User"},
