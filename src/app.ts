@@ -6,6 +6,7 @@ import router from "./routes/apiRouter"
 import passportConfig from "./helpers/passport"
 import passport from "passport"
 import cors from "cors"
+import helmet from "helmet"
 
 
 dotenv.config()
@@ -41,7 +42,10 @@ const errorHandler = (error: Error, req: Request, res:Response, next: NextFuncti
 }
 
 const app = express();
+
+
 app.use(express.json());
+app.use(helmet())
 app.use(express.urlencoded({extended: false}));
 app.use(cors({
     origin: clientOrigin,
