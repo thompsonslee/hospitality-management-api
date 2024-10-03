@@ -59,7 +59,7 @@ app.use(session({
     secret: process.env.secret_key,
     cookie:{
         maxAge: 86400000, //24 hours
-        secure: false
+        secure: process.env.NODE_ENV === "production" ? true : false,
     },
     resave: false,
     saveUninitialized: false
